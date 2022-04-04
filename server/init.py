@@ -1,11 +1,9 @@
 from pymongo import MongoClient
 
 
-def db():
-    client = MongoClient('localhost', 27017)
+def init():
+    client = MongoClient(
+        "mongodb+srv://netlifters:qdfoR8T7tHob6rQj@netlift.mvruz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
     db = client['netLift']
-    # users = db['users']
-    # workouts = db['workouts']
-    # lifts = db['lifts']
-    # exercises = db['exercises']
-    return db
+    users = db['users']
+    return users

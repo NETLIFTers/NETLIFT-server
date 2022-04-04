@@ -25,7 +25,6 @@
 #       },
 #       ]
 #     },
-#   ];
 #   "lifts": [
 #     {
 #       "id": 3,
@@ -42,9 +41,13 @@
 #       history: [60, 90, 80], // Always stored in kg
 #     },
 #   ];
+#   ];
+
 #   exercises:[
 #     {
 #       //info from exercise
 #     }
 #   ]
 # }
+
+# training_days=[0,1,3,5] = sunday, monday, wednesday, friday
