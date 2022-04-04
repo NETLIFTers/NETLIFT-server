@@ -14,14 +14,14 @@ app.config['JWT_SECRET_KEY'] = 'Your_Secret_Key'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 
 programs = [
-{
-"id": 1,
-"training_days": [1, 1, 0, 1, 1, 1, 0],
-"workouts": [1, 2, 1, 5], 
-}
+    {
+        "id": 1,
+        "training_days": [1, 1, 0, 1, 1, 1, 0],
+        "workouts": [1, 2, 1, 5],
+    }
 ]
 
-test_data =  {
+test_data = {
     "username": "test6",
     "email": "tets@gamil.com",
     "password": "11111111",
@@ -29,6 +29,7 @@ test_data =  {
     "unit": "kg",
     "smallest_increment": 1.25
 }
+
 
 @app.route('/')
 def home():
@@ -48,8 +49,8 @@ def register():
         # users.insert_one(new_user)
         user = User(new_user)
         for attr, value in user.__dict__.items():
-            print ("Attribute: " + str(attr or ""))
-            print ("Value: " + str(value or ""))
+            print("Attribute: " + str(attr or ""))
+            print("Value: " + str(value or ""))
         return "done", 201
     else:
         return jsonify({'msg': 'Username already exists'}), 409
@@ -83,17 +84,30 @@ def profile():
 @app.route('/user/program', methods=["GET", "POST"])
 def create_program():
     if request.method == "GET":
-      return jsonify(programs), 200
+        return jsonify(programs), 200
     elif request.method == "POST":
-      new_program = request.json
-      last_id = programs[-1]["id"]
-      new_program["id"] = last_id + 1
-      users.append(new_program)
-      return "New program was created", 201
+        new_program = request.json
+        last_id = programs[-1]["id"]
+        new_program["id"] = last_id + 1
+        users.append(new_program)
+        return "New program was created", 201
+
 
 @app.route('/user/program/<int:program_id>', methods=["PATCH"])
-def update_program():
-    pass
+def update_program(program_id):
+    resp = request.get_json()
+    print(resp)
+    training_days = resp[0]
+    workouts = resp[1]
+    print(training_days, workouts)
+    response = users.programs.update_one(
+        {"program_id": program_id},
+        {"$set": {"training_days": training_days, "workouts": workouts}}
+    )
+
+    print(response.raw_result)
+
+    return response.raw_result, 200
 
 # @app.route('/user/all', methods=['GET'])
 # def profile():
