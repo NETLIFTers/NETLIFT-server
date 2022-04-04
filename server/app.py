@@ -59,6 +59,9 @@ def create_program():
       users.append(new_program)
       return "New program was created", 201
 
+@app.route('/user/program/<int:program_id>', methods=["PATCH"])
+def update_program():
+    
 
 
 if __name__ == "__main__":
