@@ -19,7 +19,16 @@ programs = [
 "training_days": [1, 1, 0, 1, 1, 1, 0],
 "workouts": [1, 2, 1, 5], 
 }
-],
+]
+
+test_data =  {
+    "username": "test6",
+    "email": "tets@gamil.com",
+    "password": "11111111",
+    "body_weight": 1,
+    "unit": "kg",
+    "smallest_increment": 1.25
+}
 
 @app.route('/')
 def home():
@@ -29,14 +38,19 @@ def home():
 @app.route('/register', methods=['POST'])
 def register():
     print(users)
-    new_user = request.get_json()
-    new_user['password'] = hashlib.sha224(
-        new_user["password"].encode("utf-8")).hexdigest()
+    # new_user = request.get_json()
+    new_user = test_data
+    new_user['password_digest'] = hashlib.sha224(
+        new_user['password'].encode("utf-8")).hexdigest()
     users_db = users.find_one({"username": new_user["username"]})
 
     if not users_db:
-        users.insert_one(new_user)
-        return jsonify({'msg': 'User has been '}), 201
+        # users.insert_one(new_user)
+        user = User(new_user)
+        for attr, value in user.__dict__.items():
+            print ("Attribute: " + str(attr or ""))
+            print ("Value: " + str(value or ""))
+        return "done", 201
     else:
         return jsonify({'msg': 'Username already exists'}), 409
 
@@ -79,7 +93,7 @@ def create_program():
 
 @app.route('/user/program/<int:program_id>', methods=["PATCH"])
 def update_program():
-    
+    pass
 
 # @app.route('/user/all', methods=['GET'])
 # def profile():
