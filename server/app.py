@@ -13,6 +13,13 @@ jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = 'Your_Secret_Key'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 
+programs = [
+{
+"id": 1,
+"training_days": [1, 1, 0, 1, 1, 1, 0],
+"workouts": [1, 2, 1, 5], 
+}
+],
 
 @app.route('/')
 def home():
@@ -56,6 +63,23 @@ def profile():
     user_profile = User.find_by_name(current_user)
     return jsonify(user_profile), 200
 
+
+# create program username/program
+
+@app.route('/user/program', methods=["GET", "POST"])
+def create_program():
+    if request.method == "GET":
+      return jsonify(programs), 200
+    elif request.method == "POST":
+      new_program = request.json
+      last_id = programs[-1]["id"]
+      new_program["id"] = last_id + 1
+      users.append(new_program)
+      return "New program was created", 201
+
+@app.route('/user/program/<int:program_id>', methods=["PATCH"])
+def update_program():
+    
 
 # @app.route('/user/all', methods=['GET'])
 # def profile():
