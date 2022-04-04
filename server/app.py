@@ -1,16 +1,18 @@
-from flask import Flask, render_template, request, jsonify
-from init import db
+from flask import Flask, request, jsonify
+from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 from flask_cors import CORS
-
+import hashlib
+import datetime
+from init import init
+from models.User import User
 app = Flask(__name__)
 CORS(app)
+users = init()
 
+jwt = JWTManager(app)
+app.config['JWT_SECRET_KEY'] = 'Your_Secret_Key'
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 
-users = [
-  {'id':1, 'username': 'Falcon', 'program': 'A'},
-  {'id':2, 'username': 'Owl', 'program': 'B'},
-  {'id':3, 'username': 'Parrot', 'program': 'C'}
-]
 programs = [
 {
 "id": 1,
@@ -21,30 +23,46 @@ programs = [
 
 @app.route('/')
 def home():
-    return "<h1>Welome to NetLift<h1>"
-
-# all user data plus create user
-
-@app.route('/users', methods=["GET", "POST"])
-def show_users():
-    if request.method == "GET":
-      return jsonify(users), 200
-    elif request.method == "POST":
-      new_user = request.json
-      last_id = users[-1]["id"]
-      new_user["id"] = last_id + 1
-      users.append(new_user)
-      return f"{new_user['username']} was created", 201
+    return 'Hello, World!'
 
 
-# show specific user
+@app.route('/register', methods=['POST'])
+def register():
+    print(users)
+    new_user = request.get_json()
+    new_user['password'] = hashlib.sha224(
+        new_user["password"].encode("utf-8")).hexdigest()
+    users_db = users.find_one({"username": new_user["username"]})
 
-@app.route('/users/<string:username>')
-def show_user(username):
-    try:
-        return next(user for user in users if user["username"] == username), 200
-    except:
-        raise BadRequest(f"Cant't find user with that name: {username}")
+    if not users_db:
+        users.insert_one(new_user)
+        return jsonify({'msg': 'User has been '}), 201
+    else:
+        return jsonify({'msg': 'Username already exists'}), 409
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    login_details = request.get_json()
+    user = users.find_one({'username': login_details['username']})
+    if user:
+        encrypted_password = hashlib.sha224(
+            login_details['password'].encode("utf-8")).hexdigest()
+        if encrypted_password == user['password']:
+            access_token = create_access_token(identity=user['username'])
+            print(access_token)
+            return jsonify(access_token=access_token), 200
+    return jsonify({'msg': 'The username or password is incorrect'}), 401
+
+
+@app.route('/user', methods=['GET'])
+@jwt_required()
+def profile():
+    current_user = get_jwt_identity()
+    print(current_user)
+    user_profile = User.find_by_name(current_user)
+    return jsonify(user_profile), 200
+
 
 # create program username/program
 
@@ -63,6 +81,13 @@ def create_program():
 def update_program():
     
 
+# @app.route('/user/all', methods=['GET'])
+# def profile():
+#     user_profile = User.getAll()
+#     return jsonify({'profile': user_profile}), 200
+
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# user/userid/programs
