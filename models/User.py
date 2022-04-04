@@ -4,8 +4,9 @@ users = init()
 
 
 class User():
-    
-    _profile = { }
+
+    _profile = {}
+
     def __init__(self, data):
         self.username = data["username"]
         self.email = data["email"]
@@ -14,7 +15,7 @@ class User():
         self.body_weight = data["body_weight"]
         self._unit = data["unit"]
         self.smallest_increment = data["smallest_increment"]
-        self._programs = [] 
+        self._programs = []
         self._workouts = []
         self.lifts = []
         self.weights = []
@@ -24,9 +25,8 @@ class User():
         return self.programs
 
     @programs.setter
-    def programs(self,new_program):
+    def programs(self, new_program):
         self._programs = new_program
-
 
     @property
     def unit(self):
