@@ -102,6 +102,33 @@ def update_program(program_id):
     print(response.raw_result)
     return response.raw_result, 200
 
+@app.route('/lifts', methods=["GET", "POST"])
+@jwt_required()
+def create_lifts():
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_lift = user_profile["_lifts"]
+        return jsonify(user_lift), 200
+    elif request.method == "POST":
+        new_lift = request.get_json()
+        lift = User.add_lift(current_user, new_lift)
+        # print(lift)
+        return jsonify(lift), 201
+
+@app.route('/weights', methods=["GET", "POST"])
+@jwt_required()
+def create_weights():
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_weight = user_profile["_weights"]
+        return jsonify(user_weight), 200
+    elif request.method == "POST":
+        new_weight = request.get_json()
+        weight = User.add_weight(current_user, new_weight)
+        # print(lift)
+        return jsonify(weight), 201
 
 # return all programs
 
