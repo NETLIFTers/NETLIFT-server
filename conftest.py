@@ -1,9 +1,9 @@
 import pytest
-import app
-from controllers import User
+from app import app
+
 
 
 @pytest.fixture
-def api():
-    client = app.test_client()
-    return client
+def client():
+
+    yield app.test_client()
