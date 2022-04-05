@@ -84,8 +84,9 @@ def update_program(program_id):
         return "Program not found", 404
     elif request.method == "PATCH":
         changed_program = request.get_json()
-        # program = User.add_program(current_user, changed_program)
-        pass
+        program = User.update_program(
+            current_user, changed_program, program_id)
+        return jsonify(program), 200
 
 
 @app.route('/workout', methods=["GET", "POST"])
@@ -119,7 +120,7 @@ def update_workout(workout_id):
         pass
 
 
-@app.route('/lifts', methods=["GET", "POST"])
+@app.route('/lift', methods=["GET", "POST"])
 @jwt_required()
 def create_lifts():
     current_user = get_jwt_identity()
@@ -134,9 +135,9 @@ def create_lifts():
         return jsonify(lift), 201
 
 
-@app.route('/lifts/<int:lift_id>', methods=["GET", "PATCH"])
+@app.route('/lift/<int:lift_id>', methods=["GET", "PATCH"])
 @jwt_required()
-def update_workout(lift_id):
+def update_lift(lift_id):
     current_user = get_jwt_identity()
     user_profile = User.find_by_name(current_user)
     if request.method == "GET":
@@ -151,7 +152,7 @@ def update_workout(lift_id):
         pass
 
 
-@app.route('/weights', methods=["GET", "POST"])
+@app.route('/weight', methods=["GET", "POST"])
 @jwt_required()
 def create_weights():
     current_user = get_jwt_identity()

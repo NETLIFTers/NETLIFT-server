@@ -114,8 +114,10 @@ class User():
         return user.__dict__
 
     @classmethod
-    def update_program(self, username, update_program):
-        print(update_program)
-        changed_program = users.find_one_and_update({'username': username}, {
-            "$set": {'_programs': update_program}}, return_document=ReturnDocument.AFTER)
+    def update_program(self, username, update_program, id):
+        changed_program = users.find_one_and_replace({'username': username, '_programs.id': id}, {
+                                                     "$set": {'_programs': update_program}}, return_document=ReturnDocument.AFTER)
         return changed_program['_programs']
+
+    # @classmethod
+    # def update_workout(self, username)
