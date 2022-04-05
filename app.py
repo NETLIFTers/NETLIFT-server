@@ -35,7 +35,7 @@ def register():
     user = User.find_by_name(new_user["username"])
 
     if not user:
-        user = User.createUser(new_user)
+        user = User.create_user(new_user)
         return (user.__dict__), 201
     else:
         return jsonify({'msg': 'Username already exists'}), 409
@@ -64,16 +64,19 @@ def profile():
 
 # create program username/program
 
-# @app.route('/user/program', methods=["GET", "POST"])
-# def create_program():
-#     if request.method == "GET":
-#         return jsonify(programs), 200
-#     elif request.method == "POST":
-#         new_program = request.json
-#         last_id = programs[-1]["id"]
-#         new_program["id"] = last_id + 1
-#         users.append(new_program)
-#         return "New program was created", 201
+@app.route('/program', methods=["GET", "POST"])
+@jwt_required()
+def create_program():
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_program = user_profile["_programs"]
+        return jsonify(user_program), 200
+    elif request.method == "POST":
+        new_program = request.get_json()
+        user_profile.programs = new_program
+        User.add_program(current_user, new_program)
+        return "New program was created", 201
 
 
 # change to /program/userid/programId
