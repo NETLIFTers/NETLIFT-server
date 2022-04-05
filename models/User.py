@@ -19,16 +19,13 @@ class User():
         self._lifts = []
         self._weights = []
 
-    
     @property
     def programs(self):
         return self._programs
 
     @programs.setter
     def programs(self, new_program):
-        print(self._programs)
         self._programs.append(new_program)
-        print(self._programs)
 
     @property
     def workouts(self):
@@ -76,7 +73,7 @@ class User():
         # delete data we don't want to return
         if user_profile:
             del user_profile['_id']
-        return self
+        return user_profile
 
     @classmethod
     def get_all(self):
@@ -85,12 +82,11 @@ class User():
         return userList
 
     @classmethod
-    def add_program(self, username , new_program):
-
-        # self.programs= new_program
-
-        users.find_one_and_update({'username': username}, {"$set":{'_programs': self.programs}},return_document=ReturnDocument.AFTER)
-        
+    def add_program(self, username, new_program):
+        print(new_program)
+        updated_program = users.find_one_and_update({'username': username}, {
+            "$push": {'_programs': new_program}}, return_document=ReturnDocument.AFTER)
+        return updated_program['_programs']
 
     @classmethod
     def create_user(self, data):
