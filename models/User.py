@@ -1,7 +1,6 @@
-from types import NoneType
-from init import init
+from init import users
 from pymongo import ReturnDocument
-users = init()
+users = users()
 
 
 class User():

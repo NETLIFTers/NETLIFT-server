@@ -3,11 +3,14 @@ from flask_jwt_extended import create_access_token, JWTManager, jwt_required, ge
 from flask_cors import CORS
 import hashlib
 import datetime
-from init import init
+from init import users
 from models.User import User
+# from models.Exercise import Exercise
+# exercise = Exercise()
+
 app = Flask(__name__)
 CORS(app)
-users = init()
+users = users()
 
 jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = 'Your_Secret_Key'
