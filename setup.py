@@ -25,14 +25,14 @@
 #       },
 #       ]
 #     },
-#   "lifts": [
-#     {
-#       "id": 3,
-#       "name": "squat",
-#       "reps": 5,
-#       "sets": 5,
-#       "exercise_id": 1
-#     },
+  # "lifts": [
+  #   {
+  #     "id": 3,
+  #     "name": "squat",
+  #     "reps": 5,
+  #     "sets": 5,
+  #     "exercise_id": 1
+  #   },
 #   ];
 #   weights: [
 #     {

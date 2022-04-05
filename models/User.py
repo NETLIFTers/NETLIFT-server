@@ -89,6 +89,20 @@ class User():
         return updated_program['_programs']
 
     @classmethod
+    def add_lift(self, username, new_lift):
+        # print(new_program)
+        updated_lift = users.find_one_and_update({'username': username}, {
+            "$push": {'_lifts': new_lift}}, return_document=ReturnDocument.AFTER)
+        return updated_lift['_lifts']
+
+    @classmethod
+    def add_weight(self, username, new_weight):
+        # print(new_program)
+        updated_weight = users.find_one_and_update({'username': username}, {
+            "$push": {'_weights': new_weight}}, return_document=ReturnDocument.AFTER)
+        return updated_weight['_weights']
+
+    @classmethod
     def create_user(self, data):
         user = User(data)
         userData = {}
