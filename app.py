@@ -1,25 +1,19 @@
+import json
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 from flask_cors import CORS
 import hashlib
 import datetime
-from init import init
 from models.User import User
+# from models.Exercise import Exercise
+# exercise = Exercise()
+
 app = Flask(__name__)
 CORS(app)
-users = init()
 
 jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = 'Your_Secret_Key'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
-
-# programs = [
-#     {
-#         "id": 1,
-#         "training_days": [1, 1, 0, 1, 1, 1, 0],
-#         "workouts": [1, 2, 1, 5],
-#     }
-# ]
 
 
 @app.route('/')
@@ -35,7 +29,7 @@ def register():
     user = User.find_by_name(new_user["username"])
     if not user:
         user = User.create_user(new_user)
-        return (user.__dict__), 201
+        return (user), 201
     else:
         return jsonify({'msg': 'Username already exists'}), 409
 
@@ -53,12 +47,15 @@ def login():
     return jsonify({'msg': 'The username or password is incorrect'}), 401
 
 
-@app.route('/user', methods=['GET'])
+@app.route('/user', methods=['GET', 'POST'])
 @jwt_required()
 def profile():
-    current_user = get_jwt_identity()
-    user_profile = User.find_by_name(current_user)
-    return jsonify(user_profile), 200
+    if request.method == "GET":
+        current_user = get_jwt_identity()
+        user_profile = User.find_by_name(current_user)
+        return jsonify(user_profile), 200
+    elif request.method == "POST":
+        pass
 
 
 @app.route('/program', methods=["GET", "POST"])
@@ -75,7 +72,7 @@ def create_program():
         return jsonify(program), 201
 
 
-@app.route('/workouts', methods=["GET", "POST"])
+@app.route('/workout', methods=["GET", "POST"])
 @jwt_required()
 def workout():
     current_user = get_jwt_identity()
@@ -85,22 +82,28 @@ def workout():
         return jsonify(user_workout), 200
     elif request.method == "POST":
         new_workout = request.get_json()
-        program = User.add_workout(current_user, new_workout)
-        return jsonify(program), 201
+        workout = User.add_workout(current_user, new_workout)
+        return jsonify(workout), 201
 
 
-# change to /program/programId
 @app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
+@jwt_required()
 def update_program(program_id):
-    resp = request.get_json()
-    training_days = resp[0]
-    workouts = resp[1]
-    response = users.programs.update_one(
-        {"program_id": program_id},
-        {"$set": {"training_days": training_days, "workouts": workouts}}
-    )
-    print(response.raw_result)
-    return response.raw_result, 200
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_program = user_profile["_programs"]
+        for i in user_program:
+            if i['id'] == program_id:
+                return jsonify(i), 200
+
+        return "Program not found", 404
+    elif request.method == "PATCH":
+        changed_program = request.get_json()
+        program = User.add_program(current_user, changed_program)
+        return jsonify(program), 201
+#     return response.raw_result, 200
+
 
 @app.route('/lifts', methods=["GET", "POST"])
 @jwt_required()
@@ -115,6 +118,7 @@ def create_lifts():
         lift = User.add_lift(current_user, new_lift)
         # print(lift)
         return jsonify(lift), 201
+
 
 @app.route('/weights', methods=["GET", "POST"])
 @jwt_required()
@@ -137,8 +141,6 @@ def create_weights():
 #     user_profile = User.getAll()
 #     return jsonify({'profile': user_profile}), 200
 
-# add workouts
-# add lifts
 
 # edit workouts
 # edit lifts
