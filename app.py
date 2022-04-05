@@ -77,7 +77,7 @@ def create_program():
 
 
 # change to /program/programId
-@app.route('/program/<int:program_id>', methods=["PATCH"])
+@app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
 def update_program(program_id):
     resp = request.get_json()
     training_days = resp[0]
