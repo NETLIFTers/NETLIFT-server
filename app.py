@@ -1,4 +1,3 @@
-import json
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 from flask_cors import CORS
@@ -72,6 +71,23 @@ def create_program():
         return jsonify(program), 201
 
 
+@app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
+@jwt_required()
+def update_program(program_id):
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_program = user_profile["_programs"]
+        for i in user_program:
+            if i['id'] == program_id:
+                return jsonify(i), 200
+        return "Program not found", 404
+    elif request.method == "PATCH":
+        changed_program = request.get_json()
+        # program = User.add_program(current_user, changed_program)
+        pass
+
+
 @app.route('/workout', methods=["GET", "POST"])
 @jwt_required()
 def workout():
@@ -86,23 +102,21 @@ def workout():
         return jsonify(workout), 201
 
 
-@app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
+@app.route('/workout/<int:workout_id>', methods=["GET", "PATCH"])
 @jwt_required()
-def update_program(program_id):
+def update_workout(workout_id):
     current_user = get_jwt_identity()
     user_profile = User.find_by_name(current_user)
     if request.method == "GET":
-        user_program = user_profile["_programs"]
+        user_program = user_profile["_workouts"]
         for i in user_program:
-            if i['id'] == program_id:
+            if i['id'] == workout_id:
                 return jsonify(i), 200
-
-        return "Program not found", 404
+        return "Workout not found", 404
     elif request.method == "PATCH":
         changed_program = request.get_json()
-        program = User.add_program(current_user, changed_program)
-        return jsonify(program), 201
-#     return response.raw_result, 200
+        # program = User.add_program(current_user, changed_program)
+        pass
 
 
 @app.route('/lifts', methods=["GET", "POST"])
@@ -118,6 +132,23 @@ def create_lifts():
         lift = User.add_lift(current_user, new_lift)
         # print(lift)
         return jsonify(lift), 201
+
+
+@app.route('/lifts/<int:lift_id>', methods=["GET", "PATCH"])
+@jwt_required()
+def update_workout(lift_id):
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_program = user_profile["_lifts"]
+        for i in user_program:
+            if i['id'] == lift_id:
+                return jsonify(i), 200
+        return "Lift not found", 404
+    elif request.method == "PATCH":
+        changed_program = request.get_json()
+        # program = User.add_program(current_user, changed_program)
+        pass
 
 
 @app.route('/weights', methods=["GET", "POST"])
