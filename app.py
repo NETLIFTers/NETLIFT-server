@@ -3,26 +3,16 @@ from flask_jwt_extended import create_access_token, JWTManager, jwt_required, ge
 from flask_cors import CORS
 import hashlib
 import datetime
-from init import users
 from models.User import User
 # from models.Exercise import Exercise
 # exercise = Exercise()
 
 app = Flask(__name__)
 CORS(app)
-users = users()
 
 jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = 'Your_Secret_Key'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
-
-# programs = [
-#     {
-#         "id": 1,
-#         "training_days": [1, 1, 0, 1, 1, 1, 0],
-#         "workouts": [1, 2, 1, 5],
-#     }
-# ]
 
 
 @app.route('/')
@@ -56,15 +46,18 @@ def login():
     return jsonify({'msg': 'The username or password is incorrect'}), 401
 
 
-@app.route('/user', methods=['GET'])
+@app.route('/user', methods=['GET', 'POST'])
 @jwt_required()
 def profile():
-    current_user = get_jwt_identity()
-    user_profile = User.find_by_name(current_user)
-    return jsonify(user_profile), 200
+    if request.method == "GET":
+        current_user = get_jwt_identity()
+        user_profile = User.find_by_name(current_user)
+        return jsonify(user_profile), 200
+    elif request.method == "POST":
+        pass
 
 
-@app.route('/program', methods=["GET", "POST"])
+@app.route('/programs', methods=["GET", "POST"])
 @jwt_required()
 def create_program():
     current_user = get_jwt_identity()
@@ -88,22 +81,22 @@ def workout():
         return jsonify(user_workout), 200
     elif request.method == "POST":
         new_workout = request.get_json()
-        program = User.add_workout(current_user, new_workout)
-        return jsonify(program), 201
+        workout = User.add_workout(current_user, new_workout)
+        return jsonify(workout), 201
 
 
 # change to /program/programId
-@app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
-def update_program(program_id):
-    resp = request.get_json()
-    training_days = resp[0]
-    workouts = resp[1]
-    response = users.programs.update_one(
-        {"program_id": program_id},
-        {"$set": {"training_days": training_days, "workouts": workouts}}
-    )
-    print(response.raw_result)
-    return response.raw_result, 200
+# @app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
+# def update_program(program_id):
+#     resp = request.get_json()
+#     training_days = resp[0]
+#     workouts = resp[1]
+#     response = users.programs.update_one(
+#         {"program_id": program_id},
+#         {"$set": {"training_days": training_days, "workouts": workouts}}
+#     )
+#     print(response.raw_result)
+#     return response.raw_result, 200
 
 
 # return all programs
