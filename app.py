@@ -76,8 +76,8 @@ def create_program():
         return jsonify(program), 201
 
 
-# change to /program/userid/programId
-@app.route('/user/program/<int:program_id>', methods=["PATCH"])
+# change to /program/programId
+@app.route('/program/<int:program_id>', methods=["PATCH"])
 def update_program(program_id):
     resp = request.get_json()
     training_days = resp[0]
