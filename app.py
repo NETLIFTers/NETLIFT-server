@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 from flask_cors import CORS
@@ -28,7 +29,7 @@ def register():
     user = User.find_by_name(new_user["username"])
     if not user:
         user = User.create_user(new_user)
-        return (user.__dict__), 201
+        return (user), 201
     else:
         return jsonify({'msg': 'Username already exists'}), 409
 
@@ -57,7 +58,7 @@ def profile():
         pass
 
 
-@app.route('/programs', methods=["GET", "POST"])
+@app.route('/program', methods=["GET", "POST"])
 @jwt_required()
 def create_program():
     current_user = get_jwt_identity()
@@ -71,7 +72,7 @@ def create_program():
         return jsonify(program), 201
 
 
-@app.route('/workouts', methods=["GET", "POST"])
+@app.route('/workout', methods=["GET", "POST"])
 @jwt_required()
 def workout():
     current_user = get_jwt_identity()
@@ -85,18 +86,24 @@ def workout():
         return jsonify(workout), 201
 
 
-# change to /program/programId
-# @app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
-# def update_program(program_id):
-#     resp = request.get_json()
-#     training_days = resp[0]
-#     workouts = resp[1]
-#     response = users.programs.update_one(
-#         {"program_id": program_id},
-#         {"$set": {"training_days": training_days, "workouts": workouts}}
-#     )
-#     print(response.raw_result)
+@app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
+@jwt_required()
+def update_program(program_id):
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_program = user_profile["_programs"]
+        for i in user_program:
+            if i['id'] == program_id:
+                return jsonify(i), 200
+
+        return "Program not found", 404
+    elif request.method == "PATCH":
+        changed_program = request.get_json()
+        program = User.add_program(current_user, changed_program)
+        return jsonify(program), 201
 #     return response.raw_result, 200
+
 
 @app.route('/lifts', methods=["GET", "POST"])
 @jwt_required()
@@ -111,6 +118,7 @@ def create_lifts():
         lift = User.add_lift(current_user, new_lift)
         # print(lift)
         return jsonify(lift), 201
+
 
 @app.route('/weights', methods=["GET", "POST"])
 @jwt_required()
@@ -133,8 +141,6 @@ def create_weights():
 #     user_profile = User.getAll()
 #     return jsonify({'profile': user_profile}), 200
 
-# add workouts
-# add lifts
 
 # edit workouts
 # edit lifts
