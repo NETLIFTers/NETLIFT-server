@@ -78,14 +78,13 @@ def create_program():
       return "New program was created", 201
 
 @app.route('/user/program/<int:program_id>', methods=["PATCH"])
-def update_program():
-    
+def update_program(training_days, workouts):
+    response = db.programs.update_one(
+        { "program_id": program_id },
+        { "$set": { "training_days": training_days, "workouts" : workouts } }
+    )
 
-# @app.route('/user/all', methods=['GET'])
-# def profile():
-#     user_profile = User.getAll()
-#     return jsonify({'profile': user_profile}), 200
-
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)
