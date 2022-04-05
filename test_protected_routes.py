@@ -7,6 +7,8 @@ mock_workout = json.dumps({"id": 3,"lifts": [1, 2, 4],"completed": [1648727486]}
 
 mock_lifts = json.dumps({"id": 3,"name": "squat","reps": 5,"sets": 5,"exercise_id": 1})
 
+mock_weights = json.dumps({"user_id": 1,"lift_id": 3,"history": [60, 90, 80]})
+
 def test_user(client):
     """test /user gets 200 and returns correct user"""
     
@@ -38,4 +40,13 @@ def test_lifts(client):
     res = client.get('/lifts', content_type='application/json', headers = headers)
     assert res.status == "200 OK"
     res = client.post('/lifts', content_type='application/json', data=mock_lifts, headers = headers)
+    assert res.status == "201 CREATED"
+
+
+def test_weights(client):
+    """test /weights gets 200 and returns correct user"""
+    headers = {'Authorization': 'Bearer {}'.format(mock_token)}
+    res = client.get('/weights', content_type='application/json', headers = headers)
+    assert res.status == "200 OK"
+    res = client.post('/weights', content_type='application/json', data=mock_weights, headers = headers)
     assert res.status == "201 CREATED"
