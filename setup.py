@@ -34,12 +34,12 @@
   #     "exercise_id": 1
   #   },
 #   ];
-#   weights: [
-#     {
-#       user_id: 1,
-#       lift_id: 3,
-#       history: [60, 90, 80], // Always stored in kg
-#     },
+  # weights: [
+  #   {
+  #     user_id: 1,
+  #     lift_id: 3,
+  #     history: [60, 90, 80], // Always stored in kg
+  #   },
 #   ];
 #   ];
 

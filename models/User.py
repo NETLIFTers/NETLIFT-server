@@ -101,6 +101,12 @@ class User():
         updated_weight = users.find_one_and_update({'username': username}, {
             "$push": {'_weights': new_weight}}, return_document=ReturnDocument.AFTER)
         return updated_weight['_weights']
+    
+    @classmethod
+    def add_workout(self, username, new_workout):
+        updated_program = users.find_one_and_update({'username': username}, {
+            "$push": {'_workouts': new_workout}}, return_document=ReturnDocument.AFTER)
+        return updated_program['_workouts']
 
     @classmethod
     def create_user(self, data):
