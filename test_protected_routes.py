@@ -1,5 +1,7 @@
-
+import json
 mock_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTE4MDY4NywianRpIjoiMjg1NzJiZDgtZDVjYy00OWNmLWJjMTQtZjQ2ZDcyZTJjYTJkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3Q5OSIsIm5iZiI6MTY0OTE4MDY4NywiZXhwIjoxNjQ5MjY3MDg3fQ.mILx-yW3p4qa5nJ4nWl1sOc-vKcF0P-8GQnf53zE_eI"
+
+mock_program = json.dumps({"id": 1,"training_days": [1, 1, 0, 1, 1, 1, 0],"workouts": [1, 2, 1, 5]})
 
 def test_user(client):
     """test /user gets 200 and returns correct user"""
@@ -15,3 +17,6 @@ def test_get_program(client):
     headers = {'Authorization': 'Bearer {}'.format(mock_token)}
     res = client.get('/program', content_type='application/json', headers = headers)
     assert res.status == "200 OK"
+    res = client.post('/program', content_type='application/json', data=mock_program, headers = headers)
+    assert res.status == "201 CREATED"
+
