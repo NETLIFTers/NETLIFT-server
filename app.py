@@ -115,9 +115,10 @@ def update_workout(workout_id):
                 return jsonify(i), 200
         return "Workout not found", 404
     elif request.method == "PATCH":
-        changed_program = request.get_json()
-        # program = User.add_program(current_user, changed_program)
-        pass
+        changed_workout = request.get_json()
+        workout = User.update_program(
+            current_user, changed_workout, workout_id)
+        return jsonify(workout), 200
 
 
 @app.route('/lift', methods=["GET", "POST"])
@@ -147,9 +148,10 @@ def update_lift(lift_id):
                 return jsonify(i), 200
         return "Lift not found", 404
     elif request.method == "PATCH":
-        changed_program = request.get_json()
-        # program = User.add_program(current_user, changed_program)
-        pass
+        changed_lift = request.get_json()
+        lift = User.update_program(
+            current_user, changed_lift, lift_id)
+        return jsonify(lift), 200
 
 
 @app.route('/weight', methods=["GET", "POST"])
@@ -163,7 +165,6 @@ def create_weights():
     elif request.method == "POST":
         new_weight = request.get_json()
         weight = User.add_weight(current_user, new_weight)
-        # print(lift)
         return jsonify(weight), 201
 
 # return all programs
