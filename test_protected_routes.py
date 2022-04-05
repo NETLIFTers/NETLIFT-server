@@ -5,6 +5,8 @@ mock_program = json.dumps({"id": 1,"training_days": [1, 1, 0, 1, 1, 1, 0],"worko
 
 mock_workout = json.dumps({"id": 3,"lifts": [1, 2, 4],"completed": [1648727486]})
 
+mock_lifts = json.dumps({"id": 3,"name": "squat","reps": 5,"sets": 5,"exercise_id": 1})
+
 def test_user(client):
     """test /user gets 200 and returns correct user"""
     
@@ -25,7 +27,15 @@ def test_program(client):
 def test_workout(client):
     """test /workouts gets 200 and returns correct user"""
     headers = {'Authorization': 'Bearer {}'.format(mock_token)}
-    res = client.get('/workouts', content_type='application/json', headers = headers)
+    res = client.get('/workout', content_type='application/json', headers = headers)
     assert res.status == "200 OK"
-    res = client.post('/workouts', content_type='application/json', data=mock_workout, headers = headers)
+    res = client.post('/workout', content_type='application/json', data=mock_workout, headers = headers)
+    assert res.status == "201 CREATED"
+
+def test_lifts(client):
+    """test /lifts gets 200 and returns correct user"""
+    headers = {'Authorization': 'Bearer {}'.format(mock_token)}
+    res = client.get('/lifts', content_type='application/json', headers = headers)
+    assert res.status == "200 OK"
+    res = client.post('/lifts', content_type='application/json', data=mock_lifts, headers = headers)
     assert res.status == "201 CREATED"
