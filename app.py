@@ -33,7 +33,6 @@ def register():
     new_user['password_digest'] = hashlib.sha224(
         new_user['password'].encode("utf-8")).hexdigest()
     user = User.find_by_name(new_user["username"])
-
     if not user:
         user = User.create_user(new_user)
         return (user.__dict__), 201
@@ -62,8 +61,6 @@ def profile():
     return jsonify(user_profile), 200
 
 
-# create program username/program
-
 @app.route('/program', methods=["GET", "POST"])
 @jwt_required()
 def create_program():
@@ -74,13 +71,13 @@ def create_program():
         return jsonify(user_program), 200
     elif request.method == "POST":
         new_program = request.get_json()
-        user_profile.programs = new_program
-        User.add_program(current_user, new_program)
-        return "New program was created", 201
+        program = User.add_program(current_user, new_program)
+        # print(program)
+        return jsonify(program), 201
 
 
-# change to /program/userid/programId
-@app.route('/user/program/<int:program_id>', methods=["PATCH"])
+# change to /program/programId
+@app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
 def update_program(program_id):
     resp = request.get_json()
     training_days = resp[0]
