@@ -1,6 +1,6 @@
 from types import NoneType
 from init import init
-
+from pymongo import ReturnDocument
 users = init()
 
 
@@ -19,13 +19,16 @@ class User():
         self._lifts = []
         self._weights = []
 
+    
     @property
     def programs(self):
-        return self.programs
+        return self._programs
 
     @programs.setter
     def programs(self, new_program):
+        print(self._programs)
         self._programs.append(new_program)
+        print(self._programs)
 
     @property
     def workouts(self):
@@ -73,16 +76,24 @@ class User():
         # delete data we don't want to return
         if user_profile:
             del user_profile['_id']
-        return user_profile
+        return self
 
     @classmethod
-    def getAll(self):
+    def get_all(self):
         userList = users.find_one()
         del userList['_id']
         return userList
 
     @classmethod
-    def createUser(self, data):
+    def add_program(self, username , new_program):
+
+        # self.programs= new_program
+
+        users.find_one_and_update({'username': username}, {"$set":{'_programs': self.programs}},return_document=ReturnDocument.AFTER)
+        
+
+    @classmethod
+    def create_user(self, data):
         user = User(data)
         userData = {}
         for key, value in (user.__dict__.items()):
