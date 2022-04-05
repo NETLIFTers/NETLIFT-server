@@ -58,7 +58,6 @@ def login():
 @jwt_required()
 def profile():
     current_user = get_jwt_identity()
-    print(current_user)
     user_profile = User.find_by_name(current_user)
     return jsonify(user_profile), 200
 
@@ -76,6 +75,8 @@ def profile():
 #         users.append(new_program)
 #         return "New program was created", 201
 
+
+# change to /program/userid/programId
 @app.route('/user/program/<int:program_id>', methods=["PATCH"])
 def update_program(program_id):
     resp = request.get_json()
@@ -88,13 +89,20 @@ def update_program(program_id):
     print(response.raw_result)
     return response.raw_result, 200
 
-# @app.route('/user/all', methods=['GET'])
+
+# return all programs
+
+# @app.route('/program', methods=['GET'])
 # def profile():
 #     user_profile = User.getAll()
 #     return jsonify({'profile': user_profile}), 200
 
+# add workouts
+# add lifts
+
+# edit workouts
+# edit lifts
+
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# user/userid/programs
