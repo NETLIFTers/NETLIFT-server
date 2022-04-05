@@ -88,6 +88,12 @@ class User():
         return updated_program['_programs']
 
     @classmethod
+    def add_workout(self, username, new_workout):
+        updated_program = users.find_one_and_update({'username': username}, {
+            "$push": {'_workouts': new_workout}}, return_document=ReturnDocument.AFTER)
+        return updated_program['_workouts']
+
+    @classmethod
     def create_user(self, data):
         user = User(data)
         userData = {}

@@ -75,7 +75,20 @@ def create_program():
     elif request.method == "POST":
         new_program = request.get_json()
         program = User.add_program(current_user, new_program)
-        # print(program)
+        return jsonify(program), 201
+
+
+@app.route('/workouts', methods=["GET", "POST"])
+@jwt_required()
+def workout():
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_workout = user_profile["_workouts"]
+        return jsonify(user_workout), 200
+    elif request.method == "POST":
+        new_workout = request.get_json()
+        program = User.add_workout(current_user, new_workout)
         return jsonify(program), 201
 
 
