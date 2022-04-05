@@ -114,8 +114,28 @@ class User():
         return user.__dict__
 
     @classmethod
-    def update_program(self, username, update_program):
-        print(update_program)
+    def update_program(self, username, update_program, id):
+        users.find_one_and_update({'username': username, '_programs.id': id}, {
+                                  "$pull": {'_programs': {"id": id}}})
         changed_program = users.find_one_and_update({'username': username}, {
-            "$set": {'_programs': update_program}}, return_document=ReturnDocument.AFTER)
+            "$push": {'_programs': update_program}}, return_document=ReturnDocument.AFTER)
         return changed_program['_programs']
+
+    @classmethod
+    def update_workout(self, username, update_workout, id):
+        users.find_one_and_update({'username': username, '_workouts.id': id}, {
+                                  "$pull": {'_workouts': {"id": id}}})
+        changed_workout = users.find_one_and_update({'username': username}, {
+            "$push": {'_workouts': update_workout}}, return_document=ReturnDocument.AFTER)
+        return changed_workout['_workouts']
+
+    @classmethod
+    def update_lift(self, username, update_lift, id):
+        users.find_one_and_update({'username': username, '_lift.id': id}, {
+                                  "$pull": {'_lifts': {"id": id}}})
+        changed_lift = users.find_one_and_update({'username': username}, {
+            "$push": {'_lifts': update_lift}}, return_document=ReturnDocument.AFTER)
+        return changed_lift['_lifts']
+
+    # @classmethod
+    # def update_workout(self, username)
