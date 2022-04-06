@@ -30,6 +30,7 @@ def register():
     user = User.find_by_name(new_user["username"])
     if not user:
         user = User.create_user(new_user)
+        del user['password_digest']
         return (user), 201
     else:
         return jsonify({'msg': 'Username already exists'}), 409
@@ -203,21 +204,35 @@ def get_exercises():
         terms = args[key].split(",")
         match key:
             case "bodyPart":
-                print(terms)
                 for term in terms:
                     result = Exercise.find_by_bodyPart(term)
                     for x in result:
                         del x['_id']
                         response.append(x)
-                return (f"{response}"), 200
             case "equipment":
-                pass
+                for term in terms:
+                    result = Exercise.find_by_equipment(term)
+                    for x in result:
+                        del x['id']
+                        response.append(x)
             case "target":
-                pass
+                for term in terms:
+                    result = Exercise.find_by_target(term)
+                    for x in result:
+                        del x['id']
+                        response.append(x)
+            case "name":
+                for term in terms:
+                    result = Exercise.find_by_name(term)
+                    for x in result:
+                        del x['id']
+                        response.append(x)
             case _:
                 return "error: request not valid"
-
-    return ("Failed"), 400
+    if(response):
+        return (f"{response}"), 200
+    else:
+        return ("Failed"), 400
 
 # return all programs
 # @app.route('/program', methods=['GET'])

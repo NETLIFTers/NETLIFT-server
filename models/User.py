@@ -72,6 +72,7 @@ class User():
         # delete data we don't want to return
         if user_profile:
             del user_profile['_id']
+            # del user_profile['password_digest']
         return user_profile
 
     @classmethod
