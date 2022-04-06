@@ -158,7 +158,6 @@ def create_lifts():
     elif request.method == "POST":
         new_lift = request.get_json()
         lift = User.add_lift(current_user, new_lift)
-        # print(lift)
         return jsonify(lift), 201
 
 
