@@ -30,6 +30,7 @@ def register():
     user = User.find_by_name(new_user["username"])
     if not user:
         user = User.create_user(new_user)
+        del user['password_digest']
         return (user), 201
     else:
         return jsonify({'msg': 'Username already exists'}), 409
