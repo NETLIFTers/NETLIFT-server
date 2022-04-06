@@ -48,15 +48,17 @@ def login():
     return jsonify({'msg': 'The username or password is incorrect'}), 401
 
 
-@app.route('/user', methods=['GET', 'POST'])
+@app.route('/user', methods=['GET', 'DELETE'])
 @jwt_required()
 def profile():
     if request.method == "GET":
         current_user = get_jwt_identity()
         user_profile = User.find_by_name(current_user)
         return jsonify(user_profile), 200
-    elif request.method == "POST":
-        pass
+    elif request.method == "DELETE":
+        current_user = get_jwt_identity()
+        delete_profile = User.delete_account(current_user)
+        return jsonify({'msg': 'User has been deleted'}), 200
 
 
 @app.route('/program', methods=["GET", "POST"])
@@ -73,25 +75,25 @@ def create_program():
         return jsonify(program), 201
 
 # change to /program/programId
-@app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
-@jwt_required()
-def update_program(program_id):
-    current_user = get_jwt_identity()
-    user_profile = User.find_by_name(current_user)
-    if request.method == "GET":
-        user_program = user_profile["_programs"]
-        for key, val in user_program[0].items():
-            print(key, val)
-            # for key in i.keys():
-            #     print(key)
-            # if i['id'] == program_id:
-            #     user_program = i
-            #     print(user_program)
-        return jsonify(user_program), 200
-    elif request.method == "PATCH":
-        changed_program = request.get_json()
-        program = User.add_program(current_user, changed_program)
-        return jsonify(program), 201
+# @app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
+# @jwt_required()
+# def update_program(program_id):
+#     current_user = get_jwt_identity()
+#     user_profile = User.find_by_name(current_user)
+#     if request.method == "GET":
+#         user_program = user_profile["_programs"]
+#         for key, val in user_program[0].items():
+#             print(key, val)
+#             # for key in i.keys():
+#             #     print(key)
+#             # if i['id'] == program_id:
+#             #     user_program = i
+#             #     print(user_program)
+#         return jsonify(user_program), 200
+#     elif request.method == "PATCH":
+#         changed_program = request.get_json()
+#         program = User.add_program(current_user, changed_program)
+#         return jsonify(program), 201
 
 @app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
 @jwt_required()
@@ -223,6 +225,7 @@ def get_exercises():
 #     user_profile = User.getAll()
 #     return jsonify({'profile': user_profile}), 200
 
+#  delete account
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -145,5 +145,12 @@ class User():
             "$push": {'_lifts': update_lift}}, return_document=ReturnDocument.AFTER)
         return changed_lift['_lifts']
 
+    # delete account
+    @classmethod
+    def delete_account(self, data):
+        deleted_user = users.delete_one({user})
+        return deleted_user
+    
+    
     # @classmethod
     # def update_workout(self, username)
