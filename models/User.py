@@ -87,6 +87,14 @@ class User():
             "$push": {'_programs': new_program}}, return_document=ReturnDocument.AFTER)
         return updated_program['_programs']
 
+    
+    @classmethod
+    def update_program(self, username, update_program):
+        print(update_program)
+        changed_program = users.find_one_and_update({'username': username}, {
+            "$set": {'_programs': update_program}}, return_document=ReturnDocument.AFTER)
+        return changed_program['_programs']
+
     @classmethod
     def add_lift(self, username, new_lift):
         updated_lift = users.find_one_and_update({'username': username}, {
@@ -138,5 +146,12 @@ class User():
             "$push": {'_lifts': update_lift}}, return_document=ReturnDocument.AFTER)
         return changed_lift['_lifts']
 
+    # delete account
+    @classmethod
+    def delete_account(self, username):
+        deleted_user = users.delete_one({'username': username})
+        return deleted_user
+    
+    
     # @classmethod
     # def update_workout(self, username)
