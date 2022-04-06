@@ -148,8 +148,8 @@ class User():
 
     # delete account
     @classmethod
-    def delete_account(self, data):
-        deleted_user = users.delete_one({user})
+    def delete_account(self, username):
+        deleted_user = users.delete_one({'username': username})
         return deleted_user
     
     
