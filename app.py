@@ -1,10 +1,12 @@
+
+from tokenize import String
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 from flask_cors import CORS
 import hashlib
 import datetime
 from models.User import User
-# from models.Exercise import Exercise
+from models.Exercise import Exercise
 # exercise = Exercise()
 
 app = Flask(__name__)
@@ -84,8 +86,9 @@ def update_program(program_id):
         return "Program not found", 404
     elif request.method == "PATCH":
         changed_program = request.get_json()
-        # program = User.add_program(current_user, changed_program)
-        pass
+        program = User.update_program(
+            current_user, changed_program, program_id)
+        return jsonify(program), 200
 
 
 @app.route('/workout', methods=["GET", "POST"])
@@ -114,12 +117,13 @@ def update_workout(workout_id):
                 return jsonify(i), 200
         return "Workout not found", 404
     elif request.method == "PATCH":
-        changed_program = request.get_json()
-        # program = User.add_program(current_user, changed_program)
-        pass
+        changed_workout = request.get_json()
+        workout = User.update_program(
+            current_user, changed_workout, workout_id)
+        return jsonify(workout), 200
 
 
-@app.route('/lifts', methods=["GET", "POST"])
+@app.route('/lift', methods=["GET", "POST"])
 @jwt_required()
 def create_lifts():
     current_user = get_jwt_identity()
@@ -133,24 +137,25 @@ def create_lifts():
         return jsonify(lift), 201
 
 
-# @app.route('/lifts/<int:lift_id>', methods=["GET", "PATCH"])
-# @jwt_required()
-# def update_workout(lift_id):
-#     current_user = get_jwt_identity()
-#     user_profile = User.find_by_name(current_user)
-#     if request.method == "GET":
-#         user_program = user_profile["_lifts"]
-#         for i in user_program:
-#             if i['id'] == lift_id:
-#                 return jsonify(i), 200
-#         return "Lift not found", 404
-#     elif request.method == "PATCH":
-#         changed_program = request.get_json()
-#         # program = User.add_program(current_user, changed_program)
-#         pass
+@app.route('/lift/<int:lift_id>', methods=["GET", "PATCH"])
+@jwt_required()
+def update_lift(lift_id):
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_program = user_profile["_lifts"]
+        for i in user_program:
+            if i['id'] == lift_id:
+                return jsonify(i), 200
+        return "Lift not found", 404
+    elif request.method == "PATCH":
+        changed_lift = request.get_json()
+        lift = User.update_program(
+            current_user, changed_lift, lift_id)
+        return jsonify(lift), 200
 
 
-@app.route('/weights', methods=["GET", "POST"])
+@app.route('/weight', methods=["GET", "POST"])
 @jwt_required()
 def create_weights():
     current_user = get_jwt_identity()
@@ -161,19 +166,40 @@ def create_weights():
     elif request.method == "POST":
         new_weight = request.get_json()
         weight = User.add_weight(current_user, new_weight)
-        # print(lift)
         return jsonify(weight), 201
 
-# return all programs
+# need to finish
 
+
+@app.route('/exercises')
+def get_exercises():
+    args = request.args
+    response = []
+    for key in args.keys():
+        terms = args[key].split(",")
+        match key:
+            case "bodyPart":
+                print(terms)
+                for term in terms:
+                    result = Exercise.find_by_bodyPart(term)
+                    for x in result:
+                        del x['_id']
+                        response.append(x)
+                return (f"{response}"), 200
+            case "equipment":
+                pass
+            case "target":
+                pass
+            case _:
+                return "error: request not valid"
+
+    return ("Failed"), 400
+
+# return all programs
 # @app.route('/program', methods=['GET'])
 # def profile():
 #     user_profile = User.getAll()
 #     return jsonify({'profile': user_profile}), 200
-
-
-# edit workouts
-# edit lifts
 
 
 if __name__ == "__main__":

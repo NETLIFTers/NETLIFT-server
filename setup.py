@@ -25,21 +25,21 @@
 #       },
 #       ]
 #     },
-  # "lifts": [
-  #   {
-  #     "id": 3,
-  #     "name": "squat",
-  #     "reps": 5,
-  #     "sets": 5,
-  #     "exercise_id": 1
-  #   },
+#   "lifts": [
+#     {
+#       "id": 3,
+#       "name": "squat",
+#       "reps": 5,
+#       "sets": 5,
+#       "exercise_id": 1
+#     },
 #   ];
-  # weights: [
-  #   {
-  #     user_id: 1,
-  #     lift_id: 3,
-  #     history: [60, 90, 80], // Always stored in kg
-  #   },
+#   weights: [
+#     {
+#       user_id: 1,
+#       lift_id: 3,
+#       history: [60, 90, 80], // Always stored in kg
+#     },
 #   ];
 #   ];
 

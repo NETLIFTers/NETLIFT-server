@@ -35,18 +35,18 @@ def test_workout(client):
     assert res.status == "201 CREATED"
 
 def test_lifts(client):
-    """test /lifts gets 200 and returns correct user"""
+    """test /lift gets 200 and returns correct user"""
     headers = {'Authorization': 'Bearer {}'.format(mock_token)}
-    res = client.get('/lifts', content_type='application/json', headers = headers)
+    res = client.get('/lift', content_type='application/json', headers = headers)
     assert res.status == "200 OK"
-    res = client.post('/lifts', content_type='application/json', data=mock_lifts, headers = headers)
+    res = client.post('/lift', content_type='application/json', data=mock_lifts, headers = headers)
     assert res.status == "201 CREATED"
 
 
 def test_weights(client):
-    """test /weights gets 200 and returns correct user"""
+    """test /weight gets 200 and returns correct user"""
     headers = {'Authorization': 'Bearer {}'.format(mock_token)}
-    res = client.get('/weights', content_type='application/json', headers = headers)
+    res = client.get('/weight', content_type='application/json', headers = headers)
     assert res.status == "200 OK"
-    res = client.post('/weights', content_type='application/json', data=mock_weights, headers = headers)
+    res = client.post('/weight', content_type='application/json', data=mock_weights, headers = headers)
     assert res.status == "201 CREATED"

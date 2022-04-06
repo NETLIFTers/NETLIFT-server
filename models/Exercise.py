@@ -32,3 +32,7 @@ class Exercise():
             exerciseObject['equipment'] = exercise['equipment']
             exerciseObject['gifUrl'] = exercise['gifUrl']
             exercises.insert_one(exerciseObject)
+
+    def find_by_bodyPart(bodyPart):
+        result = exercises.find({"bodyPart": bodyPart})
+        return result
