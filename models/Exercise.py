@@ -33,5 +33,17 @@ class Exercise():
             exercises.insert_one(exerciseObject)
 
     def find_by_bodyPart(bodyPart):
-        result = exercises.find({"bodyPart": bodyPart})
+        result = exercises.find({"bodyPart": {"$regex": f"{bodyPart}"}})
+        return result
+
+    def find_by_equipment(equipment):
+        result = exercises.find({"equipment": equipment})
+        return result
+
+    def find_by_target(target):
+        result = exercises.find({"target": target})
+        return result
+
+    def find_by_name(name):
+        result = exercises.find({"name": {"$regex": f"{name}"}})
         return result
