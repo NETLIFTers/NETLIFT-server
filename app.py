@@ -19,7 +19,7 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 
 @app.route('/')
 def home():
-    return 'Hello, World!'
+    return 'Hello, World!', 200
 
 
 @app.route('/register', methods=['POST'])
@@ -61,10 +61,11 @@ def profile():
         return jsonify({'msg': 'User has been deleted'}), 200
     elif request.method == "PATCH":
         args = request.get_json()
-        match args: 
+        match args:
             case "username":
                 new_username = args["username"]
-                updated_profile = User.update_username(current_user, new_username)
+                updated_profile = User.update_username(
+                    current_user, new_username)
                 return jsonify(updated_profile), 200
             case "email":
                 new_email = args["email"]
@@ -72,13 +73,13 @@ def profile():
                 return jsonify(updated_profile), 200
             case "password":
                 new_password = args["password"]
-                password_digest = hashlib.sha224(new_password.encode("utf-8")).hexdigest()
-                updated_profile = User.update_password(current_user, password_digest)
-                return jsonify(updated_profile), 200 
-             case _:
-                return "error: request not valid"   
-
-
+                password_digest = hashlib.sha224(
+                    new_password.encode("utf-8")).hexdigest()
+                updated_profile = User.update_password(
+                    current_user, password_digest)
+                return jsonify(updated_profile), 200
+            case _:
+                return "error: request not valid"
 
 
 @app.route('/program', methods=["GET", "POST"])
@@ -94,26 +95,6 @@ def create_program():
         program = User.add_program(current_user, new_program)
         return jsonify(program), 201
 
-# change to /program/programId
-# @app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
-# @jwt_required()
-# def update_program(program_id):
-#     current_user = get_jwt_identity()
-#     user_profile = User.find_by_name(current_user)
-#     if request.method == "GET":
-#         user_program = user_profile["_programs"]
-#         for key, val in user_program[0].items():
-#             print(key, val)
-#             # for key in i.keys():
-#             #     print(key)
-#             # if i['id'] == program_id:
-#             #     user_program = i
-#             #     print(user_program)
-#         return jsonify(user_program), 200
-#     elif request.method == "PATCH":
-#         changed_program = request.get_json()
-#         program = User.add_program(current_user, changed_program)
-#         return jsonify(program), 201
 
 @app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
 @jwt_required()
@@ -145,7 +126,6 @@ def workout():
         new_workout = request.get_json()
         workout = User.add_workout(current_user, new_workout)
         return jsonify(workout), 201
-
 
 
 @app.route('/workout/<int:workout_id>', methods=["GET", "PATCH"])
@@ -252,13 +232,6 @@ def get_exercises():
     else:
         return ("Failed"), 400
 
-# return all programs
-# @app.route('/program', methods=['GET'])
-# def profile():
-#     user_profile = User.getAll()
-#     return jsonify({'profile': user_profile}), 200
-
-#  delete account
 
 if __name__ == "__main__":
     app.run(debug=True)
