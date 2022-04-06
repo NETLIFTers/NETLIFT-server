@@ -1,7 +1,6 @@
-from types import NoneType
-from init import init
+from init import users
 from pymongo import ReturnDocument
-users = init()
+users = users()
 
 
 class User():
@@ -11,9 +10,9 @@ class User():
         self.email = data["email"]
         self.password_digest = data["password_digest"]
         self._active_program_id = 0
-        self.body_weight = data["body_weight"]
-        self._unit = data["unit"]
-        self.smallest_increment = data["smallest_increment"]
+        self.body_weight = 0
+        self._unit = 0
+        self.smallest_increment = 0
         self._programs = []
         self._workouts = []
         self._lifts = []
@@ -25,7 +24,7 @@ class User():
 
     @programs.setter
     def programs(self, new_program):
-        self._programs.append(new_program)
+        self._programs = (new_program)
 
     @property
     def workouts(self):
@@ -33,7 +32,7 @@ class User():
 
     @workouts.setter
     def workouts(self, new_workout):
-        self._workouts.append(new_workout)
+        self._workouts = (new_workout)
 
     @property
     def lifts(self):
@@ -41,7 +40,7 @@ class User():
 
     @lifts.setter
     def lifts(self, new_lifts):
-        self._lifts.append(new_lifts)
+        self._lifts = (new_lifts)
 
     @property
     def weights(self):
@@ -49,7 +48,7 @@ class User():
 
     @weights.setter
     def weights(self, weights):
-        self._weights.append(weights)
+        self._weights = (weights)
 
     @property
     def unit(self):
@@ -83,7 +82,6 @@ class User():
 
     @classmethod
     def add_program(self, username, new_program):
-        print(new_program)
         updated_program = users.find_one_and_update({'username': username}, {
             "$push": {'_programs': new_program}}, return_document=ReturnDocument.AFTER)
         return updated_program['_programs']
@@ -98,23 +96,21 @@ class User():
 
     @classmethod
     def add_lift(self, username, new_lift):
-        # print(new_program)
         updated_lift = users.find_one_and_update({'username': username}, {
             "$push": {'_lifts': new_lift}}, return_document=ReturnDocument.AFTER)
         return updated_lift['_lifts']
 
     @classmethod
     def add_weight(self, username, new_weight):
-        # print(new_program)
         updated_weight = users.find_one_and_update({'username': username}, {
             "$push": {'_weights': new_weight}}, return_document=ReturnDocument.AFTER)
         return updated_weight['_weights']
-    
+
     @classmethod
     def add_workout(self, username, new_workout):
-        updated_program = users.find_one_and_update({'username': username}, {
+        updated_workout = users.find_one_and_update({'username': username}, {
             "$push": {'_workouts': new_workout}}, return_document=ReturnDocument.AFTER)
-        return updated_program['_workouts']
+        return updated_workout['_workouts']
 
     @classmethod
     def create_user(self, data):
@@ -123,4 +119,31 @@ class User():
         for key, value in (user.__dict__.items()):
             userData[key] = value
         users.insert_one(userData)
-        return user
+        return user.__dict__
+
+    @classmethod
+    def update_program(self, username, update_program, id):
+        users.find_one_and_update({'username': username, '_programs.id': id}, {
+                                  "$pull": {'_programs': {"id": id}}})
+        changed_program = users.find_one_and_update({'username': username}, {
+            "$push": {'_programs': update_program}}, return_document=ReturnDocument.AFTER)
+        return changed_program['_programs']
+
+    @classmethod
+    def update_workout(self, username, update_workout, id):
+        users.find_one_and_update({'username': username, '_workouts.id': id}, {
+                                  "$pull": {'_workouts': {"id": id}}})
+        changed_workout = users.find_one_and_update({'username': username}, {
+            "$push": {'_workouts': update_workout}}, return_document=ReturnDocument.AFTER)
+        return changed_workout['_workouts']
+
+    @classmethod
+    def update_lift(self, username, update_lift, id):
+        users.find_one_and_update({'username': username, '_lift.id': id}, {
+                                  "$pull": {'_lifts': {"id": id}}})
+        changed_lift = users.find_one_and_update({'username': username}, {
+            "$push": {'_lifts': update_lift}}, return_document=ReturnDocument.AFTER)
+        return changed_lift['_lifts']
+
+    # @classmethod
+    # def update_workout(self, username)
