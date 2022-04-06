@@ -49,17 +49,23 @@ def login():
     return jsonify({'msg': 'The username or password is incorrect'}), 401
 
 
-@app.route('/user', methods=['GET', 'DELETE'])
+@app.route('/user', methods=['GET', 'DELETE', 'PATCH'])
 @jwt_required()
 def profile():
+    current_user = get_jwt_identity()
     if request.method == "GET":
-        current_user = get_jwt_identity()
         user_profile = User.find_by_name(current_user)
         return jsonify(user_profile), 200
     elif request.method == "DELETE":
-        current_user = get_jwt_identity()
         delete_profile = User.delete_account(current_user)
         return jsonify({'msg': 'User has been deleted'}), 200
+    elif request.method == "PATCH":
+        new_username_req = request.get_json()
+        new_username = new_username_req["username"]
+        updated_profile = User.update_username(current_user, new_username)
+        return jsonify(updated_profile), 200
+
+
 
 
 @app.route('/program', methods=["GET", "POST"])

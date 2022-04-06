@@ -145,8 +145,25 @@ class User():
         changed_lift = users.find_one_and_update({'username': username}, {
             "$push": {'_lifts': update_lift}}, return_document=ReturnDocument.AFTER)
         return changed_lift['_lifts']
+ 
+    @classmethod
+    def update_username(self, username, update_username):
+        changed_username = users.find_one_and_update({'username': username}, {
+            "$set": {'username': update_username}})
+        return changed_username['username']
+   
+    @classmethod
+    def update_password(self, username, update_password):
+        changed_password = users.find_one_and_update({'username': username}, {
+            "$set": {'username': update_password}})
+        return changed_password['password']
+    
+    @classmethod
+    def update_email(self, username, update_email):
+        changed_email = users.find_one_and_update({'username': username}, {
+            "$set": {'username': update_email}})
+        return changed_email['email']
 
-    # delete account
     @classmethod
     def delete_account(self, username):
         deleted_user = users.delete_one({'username': username})
