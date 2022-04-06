@@ -1,10 +1,12 @@
+
+from tokenize import String
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 from flask_cors import CORS
 import hashlib
 import datetime
 from models.User import User
-# from models.Exercise import Exercise
+from models.Exercise import Exercise
 # exercise = Exercise()
 
 app = Flask(__name__)
@@ -167,16 +169,38 @@ def create_weights():
         weight = User.add_weight(current_user, new_weight)
         return jsonify(weight), 201
 
-# return all programs
+# need to finish
 
+
+@app.route('/exercises')
+def get_exercises():
+    args = request.args
+    response = []
+    for key in args.keys():
+        terms = args[key].split(",")
+        match key:
+            case "bodyPart":
+                print(terms)
+                for term in terms:
+                    result = Exercise.find_by_bodyPart(term)
+                    for x in result:
+                        del x['_id']
+                        response.append(x)
+                return (f"{response}"), 200
+            case "equipment":
+                pass
+            case "target":
+                pass
+            case _:
+                return "error: request not valid"
+
+    return ("Failed"), 400
+
+# return all programs
 # @app.route('/program', methods=['GET'])
 # def profile():
 #     user_profile = User.getAll()
 #     return jsonify({'profile': user_profile}), 200
-
-
-# edit workouts
-# edit lifts
 
 
 if __name__ == "__main__":
