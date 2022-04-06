@@ -74,6 +74,26 @@ def create_program():
         program = User.add_program(current_user, new_program)
         return jsonify(program), 201
 
+# change to /program/programId
+@app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
+@jwt_required()
+def update_program(program_id):
+    current_user = get_jwt_identity()
+    user_profile = User.find_by_name(current_user)
+    if request.method == "GET":
+        user_program = user_profile["_programs"]
+        for key, val in user_program[0].items():
+            print(key, val)
+            # for key in i.keys():
+            #     print(key)
+            # if i['id'] == program_id:
+            #     user_program = i
+            #     print(user_program)
+        return jsonify(user_program), 200
+    elif request.method == "PATCH":
+        changed_program = request.get_json()
+        program = User.add_program(current_user, changed_program)
+        return jsonify(program), 201
 
 @app.route('/workouts', methods=["GET", "POST"])
 @jwt_required()
@@ -89,18 +109,6 @@ def workout():
         return jsonify(program), 201
 
 
-# change to /program/programId
-@app.route('/program/<int:program_id>', methods=["GET", "PATCH"])
-def update_program(program_id):
-    resp = request.get_json()
-    training_days = resp[0]
-    workouts = resp[1]
-    response = users.programs.update_one(
-        {"program_id": program_id},
-        {"$set": {"training_days": training_days, "workouts": workouts}}
-    )
-    print(response.raw_result)
-    return response.raw_result, 200
 
 @app.route('/lifts', methods=["GET", "POST"])
 @jwt_required()

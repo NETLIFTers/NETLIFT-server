@@ -88,6 +88,14 @@ class User():
             "$push": {'_programs': new_program}}, return_document=ReturnDocument.AFTER)
         return updated_program['_programs']
 
+    
+    @classmethod
+    def update_program(self, username, update_program):
+        print(update_program)
+        changed_program = users.find_one_and_update({'username': username}, {
+            "$set": {'_programs': update_program}}, return_document=ReturnDocument.AFTER)
+        return changed_program['_programs']
+
     @classmethod
     def add_lift(self, username, new_lift):
         # print(new_program)
