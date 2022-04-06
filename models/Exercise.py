@@ -1,4 +1,3 @@
-import json
 import requests
 from init import exercises
 exercises = exercises()
