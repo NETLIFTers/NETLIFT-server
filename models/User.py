@@ -153,16 +153,17 @@ class User():
         return changed_username['username']
    
     @classmethod
-    def update_password(self, username, update_password):
-        changed_password = users.find_one_and_update({'username': username}, {
-            "$set": {'username': update_password}})
-        return changed_password['password']
-    
-    @classmethod
     def update_email(self, username, update_email):
         changed_email = users.find_one_and_update({'username': username}, {
-            "$set": {'username': update_email}})
+            "$set": {'email': update_email}})
         return changed_email['email']
+   
+    @classmethod
+    def update_password(self, username, update_password):
+        changed_password = users.find_one_and_update({'username': username}, {
+            "$set": {'password_digest': update_password}})
+        return True
+    
 
     @classmethod
     def delete_account(self, username):

@@ -60,10 +60,23 @@ def profile():
         delete_profile = User.delete_account(current_user)
         return jsonify({'msg': 'User has been deleted'}), 200
     elif request.method == "PATCH":
-        new_username_req = request.get_json()
-        new_username = new_username_req["username"]
-        updated_profile = User.update_username(current_user, new_username)
-        return jsonify(updated_profile), 200
+        args = request.get_json()
+        match args: 
+            case "username":
+                new_username = args["username"]
+                updated_profile = User.update_username(current_user, new_username)
+                return jsonify(updated_profile), 200
+            case "email":
+                new_email = args["email"]
+                updated_profile = User.update_email(current_user, new_email)
+                return jsonify(updated_profile), 200
+            case "password":
+                new_password = args["password"]
+                password_digest = hashlib.sha224(new_password.encode("utf-8")).hexdigest()
+                updated_profile = User.update_password(current_user, password_digest)
+                return jsonify(updated_profile), 200 
+             case _:
+                return "error: request not valid"   
 
 
 
