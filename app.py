@@ -81,6 +81,20 @@ def profile():
                 updated_profile = User.update_password(
                     current_user, password_digest)
                 return jsonify(updated_profile), 200
+            case "body_weight":
+                new_body_weight = args["body_weight"]
+                updated_profile = User.update_body_weight(
+                    current_user, new_body_weight)
+                return jsonify(updated_profile), 200
+            case "smallest_increment":
+                new_smallest_increment = args["smallest_increment"]
+                updated_profile = User.update_smallest_increment(
+                    current_user, new_smallest_increment)
+                return jsonify(updated_profile), 200
+            case "_unit":
+                new_unit = args["_unit"]
+                updated_profile = User.update_unit(current_user, new_unit)
+                return jsonify(updated_profile), 200
             case _:
                 return "error: request not valid"
 

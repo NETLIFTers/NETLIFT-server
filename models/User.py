@@ -11,7 +11,7 @@ class User():
         self.password_digest = data["password_digest"]
         self._active_program_id = 0
         self.body_weight = 0
-        self._unit = 0
+        self._unit = "kg"
         self.smallest_increment = 0
         self._programs = []
         self._workouts = []
@@ -162,6 +162,24 @@ class User():
         changed_password = users.find_one_and_update({'username': username}, {
             "$set": {'password_digest': update_password}})
         return True
+
+    @classmethod
+    def update_body_weight(self, username, update_body_weight):
+        changed_body_weight = users.find_one_and_update({'username': username}, {
+            "$set": {'body_weight': update_body_weight}})
+        return changed_body_weight['body_weight']
+
+    @classmethod
+    def update_smallest_increment(self, username, update_smallest_increment):
+        changed_smallest_increment = users.find_one_and_update({'username': username}, {
+            "$set": {'smallest_increment': update_smallest_increment}})
+        return changed_smallest_increment['smallest_increment']
+
+    @classmethod
+    def update_unit(self, username, update_unit):
+        changed_unit = users.find_one_and_update({'username': username}, {
+            "$set": {'_unit': update_unit}})
+        return changed_unit['_unit']
 
     @classmethod
     def delete_account(self, username):
