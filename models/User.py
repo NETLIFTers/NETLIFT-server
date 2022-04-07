@@ -18,45 +18,45 @@ class User():
         self._lifts = []
         self._weights = []
 
-    @property
-    def programs(self):
-        return self._programs
+    # @property
+    # def programs(self):
+    #     return self._programs
 
-    @programs.setter
-    def programs(self, new_program):
-        self._programs = (new_program)
+    # @programs.setter
+    # def programs(self, new_program):
+    #     self._programs = (new_program)
 
-    @property
-    def workouts(self):
-        return self.workouts
+    # @property
+    # def workouts(self):
+    #     return self.workouts
 
-    @workouts.setter
-    def workouts(self, new_workout):
-        self._workouts = (new_workout)
+    # @workouts.setter
+    # def workouts(self, new_workout):
+    #     self._workouts = (new_workout)
 
-    @property
-    def lifts(self):
-        return self.lifts
+    # @property
+    # def lifts(self):
+    #     return self.lifts
 
-    @lifts.setter
-    def lifts(self, new_lifts):
-        self._lifts = (new_lifts)
+    # @lifts.setter
+    # def lifts(self, new_lifts):
+    #     self._lifts = (new_lifts)
 
-    @property
-    def weights(self):
-        return self.weights
+    # @property
+    # def weights(self):
+    #     return self.weights
 
-    @weights.setter
-    def weights(self, weights):
-        self._weights = (weights)
+    # @weights.setter
+    # def weights(self, weights):
+    #     self._weights = (weights)
 
-    @property
-    def unit(self):
-        return self.unit
+    # @property
+    # def unit(self):
+    #     return self.unit
 
-    @unit.setter
-    def unit(self, new_unit):
-        self._unit = new_unit
+    # @unit.setter
+    # def unit(self, new_unit):
+    #     self._unit = new_unit
 
     @property
     def active_program_id(self):
@@ -75,11 +75,11 @@ class User():
             # del user_profile['password_digest']
         return user_profile
 
-    @classmethod
-    def get_all(self):
-        userList = users.find_one()
-        del userList['_id']
-        return userList
+    # @classmethod
+    # def get_all(self):
+    #     userList = users.find_one()
+    #     del userList['_id']
+    #     return userList
 
     @classmethod
     def add_program(self, username, new_program):
@@ -87,7 +87,6 @@ class User():
             "$push": {'_programs': new_program}}, return_document=ReturnDocument.AFTER)
         return updated_program['_programs']
 
-    
     @classmethod
     def update_program(self, username, update_program):
         print(update_program)
@@ -145,19 +144,19 @@ class User():
         changed_lift = users.find_one_and_update({'username': username}, {
             "$push": {'_lifts': update_lift}}, return_document=ReturnDocument.AFTER)
         return changed_lift['_lifts']
- 
+
     @classmethod
     def update_username(self, username, update_username):
         changed_username = users.find_one_and_update({'username': username}, {
             "$set": {'username': update_username}}, return_document=ReturnDocument.AFTER)
         return changed_username['username']
-   
+
     @classmethod
     def update_email(self, username, update_email):
         changed_email = users.find_one_and_update({'username': username}, {
             "$set": {'email': update_email}})
         return changed_email['email']
-   
+
     @classmethod
     def update_password(self, username, update_password):
         changed_password = users.find_one_and_update({'username': username}, {
@@ -181,13 +180,11 @@ class User():
         changed_unit = users.find_one_and_update({'username': username}, {
             "$set": {'_unit': update_unit}})
         return changed_unit['_unit']
-    
 
     @classmethod
     def delete_account(self, username):
         deleted_user = users.delete_one({'username': username})
         return deleted_user
-    
-    
+
     # @classmethod
     # def update_workout(self, username)
