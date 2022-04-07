@@ -68,7 +68,6 @@ def profile():
             case "username":
                 new_username = args["username"]
                 updated_profile = User.update_username(current_user, new_username)
-                print(updated_profile)
                 return jsonify(updated_profile), 200
             case "email":
                 new_email = args["email"]
