@@ -61,7 +61,10 @@ def profile():
         return jsonify({'msg': 'User has been deleted'}), 200
     elif request.method == "PATCH":
         args = request.get_json()
-        match args:
+        arg_case = ""
+        for key in args:
+            arg_case = key
+        match arg_case:
             case "username":
                 new_username = args["username"]
                 updated_profile = User.update_username(

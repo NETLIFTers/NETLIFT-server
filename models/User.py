@@ -148,7 +148,7 @@ class User():
     @classmethod
     def update_username(self, username, update_username):
         changed_username = users.find_one_and_update({'username': username}, {
-            "$set": {'username': update_username}})
+            "$set": {'username': update_username}}, return_document=ReturnDocument.AFTER)
         return changed_username['username']
 
     @classmethod
