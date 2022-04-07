@@ -222,7 +222,7 @@ def get_exercises():
                 for term in terms:
                     result = Exercise.find_by_bodyPart(term)
                     for x in result:
-                        # del x['_id']
+                        del x['_id']
                         response.append(x)
             case "equipment":
                 for term in terms:
@@ -233,14 +233,14 @@ def get_exercises():
                     result = Exercise.find_by_equipment(term)
                     for x in result:
                         if response[0]['bodyPart'] == x['bodyPart']:
-                            del x['id']
+                            del x['_id']
                             new_resp.append(x)
                     response = new_resp
             case "target":
                 for term in terms:
                     result = Exercise.find_by_target(term)
                     for x in result:
-                        del x['id']
+                        del x['_id']
                         response.append(x)
             case "name":
                 for term in terms:
@@ -251,7 +251,7 @@ def get_exercises():
             case _:
                 return "error: request not valid"
     if(response):
-        return (f"{response}"), 200
+        return (jsonify(response)), 200
     else:
         return ("Failed"), 400
 
