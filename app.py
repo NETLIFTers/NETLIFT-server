@@ -222,14 +222,20 @@ def get_exercises():
                 for term in terms:
                     result = Exercise.find_by_bodyPart(term)
                     for x in result:
-                        del x['_id']
+                        # del x['_id']
                         response.append(x)
             case "equipment":
                 for term in terms:
+                    new_resp = []
+                    for i in range(len(response)):
+                        if response[i]['equipment'] == term:
+                            new_resp.append(response[i])
                     result = Exercise.find_by_equipment(term)
                     for x in result:
-                        del x['id']
-                        response.append(x)
+                        if response[0]['bodyPart'] == x['bodyPart']:
+                            del x['id']
+                            new_resp.append(x)
+                    response = new_resp
             case "target":
                 for term in terms:
                     result = Exercise.find_by_target(term)
