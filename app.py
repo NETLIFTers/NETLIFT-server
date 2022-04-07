@@ -226,15 +226,21 @@ def get_exercises():
                         response.append(x)
             case "equipment":
                 for term in terms:
+                    new_resp = []
+                    for i in range(len(response)):
+                        if response[i]['equipment'] == term:
+                            new_resp.append(response[i])
                     result = Exercise.find_by_equipment(term)
                     for x in result:
-                        del x['id']
-                        response.append(x)
+                        if response[0]['bodyPart'] == x['bodyPart']:
+                            del x['_id']
+                            new_resp.append(x)
+                    response = new_resp
             case "target":
                 for term in terms:
                     result = Exercise.find_by_target(term)
                     for x in result:
-                        del x['id']
+                        del x['_id']
                         response.append(x)
             case "name":
                 for term in terms:
@@ -245,7 +251,7 @@ def get_exercises():
             case _:
                 return "error: request not valid"
     if(response):
-        return (f"{response}"), 200
+        return (jsonify(response)), 200
     else:
         return ("Failed"), 400
 
